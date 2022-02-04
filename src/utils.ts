@@ -1,6 +1,5 @@
-//var csv is the CSV file with headers
-export function csvJSON(csv: string) {
-  var lines = csv.split("\n");
+export function csvToJsonString(text: string): string {
+  var lines = text.split("\n");
 
   var result = [];
 
@@ -21,6 +20,9 @@ export function csvJSON(csv: string) {
     result.push(obj);
   }
 
-  //return result; //JavaScript object
   return JSON.stringify(result); //JSON
+}
+
+export function csvToJsonObject(text: string) {
+  return JSON.parse(csvToJsonString(text));
 }
