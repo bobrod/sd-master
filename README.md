@@ -1,46 +1,80 @@
-# Getting Started with Create React App
+# GoogleSheets Connection Options
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+SDDB Raw Shared Link (Created via Share button):\
+https://docs.google.com/spreadsheets/d/1bAkdviCem86Zx2WafziYzwj71hojWnfWiMTg5KYY3Cw/edit#gid=94746449
 
-## Available Scripts
+SDDB Raw Published Link (created via file->share->Publish to web):\
+https://docs.google.com/spreadsheets/d/e/2PACX-1vS_wBhF_on8l1V1GUeBrW5zWaWPA0GHYg4wZPW-IWFccqDmg0AkLVTuRW99TqxqhLz77mU1bsS9yt40/pub?single=true&gid=94746449
 
-In the project directory, you can run:
+## CSV Format
 
-### `yarn start`
+Use the [SDDB Raw Published Link](https://docs.google.com/spreadsheets/d/e/2PACX-1vS_wBhF_on8l1V1GUeBrW5zWaWPA0GHYg4wZPW-IWFccqDmg0AkLVTuRW99TqxqhLz77mU1bsS9yt40/pub?)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+add:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+`gid={gid}&single=true&output=csv`
 
-### `yarn test`
+eg:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+`https://docs.google.com/spreadsheets/d/e/2PACX-1vS_wBhF_on8l1V1GUeBrW5zWaWPA0GHYg4wZPW-IWFccqDmg0AkLVTuRW99TqxqhLz77mU1bsS9yt40/pub?gid=94746449&single=true&output=csv`
 
-### `yarn build`
+Example usage (taken from sd-axios):
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```jsx
+function getURL(gid: any) {
+  const dbUrl =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vS_wBhF_on8l1V1GUeBrW5zWaWPA0GHYg4wZPW-IWFccqDmg0AkLVTuRW99TqxqhLz77mU1bsS9yt40/pub";
+  return `${dbUrl}?gid=${gid}&output=csv`;
+}
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+async function fetchParsedCSV(url: string): Promise<any> {
+  try {
+    const response = await axios.get(url);
+    const parsed = Papa.parse(response.data, {
+      header: true,
+    });
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    return parsed.data;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-### `yarn eject`
+export async function getPlayers(): Promise<Player[]> {
+  return await fetchParsedCSV(getURL(SheetId.Players));
+}
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## Google Visualization API Format
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Use the [SDDB Raw Shared Link](`https://docs.google.com/spreadsheets/d/1bAkdviCem86Zx2WafziYzwj71hojWnfWiMTg5KYY3Cw/`)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+add:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+`gviz/tq?sheet={sheet}&headers=1&tq=select%20*`
 
-## Learn More
+eg:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+`https://docs.google.com/spreadsheets/d/1bAkdviCem86Zx2WafziYzwj71hojWnfWiMTg5KYY3Cw/gviz/tq?sheet=players&headers=1&tq=select%20*`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Web App
+
+Use the spreadsheet URL (just open spreadsheet in browser and copy value in url bar)
+
+Example usage (Google AppsScript):
+
+```jsx
+function loadSpreadsheet(url) {
+  const ss = SpreadsheetApp.openByUrl(url);
+  return ss;
+}
+
+function loadWorksheet(url, sheetName) {
+  const ss = loadSpreadsheet(url);
+  const ws = ss.getSheetByName(sheetName);
+}
+```
+
+## GOOGLEAPIS
+
+see googleapis.js
