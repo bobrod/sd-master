@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/sd-master/static/css/main.e6c13ad2.css",
+    "main.js": "/sd-master/static/js/main.f5149e60.js",
+    "index.html": "/sd-master/index.html",
+    "main.e6c13ad2.css.map": "/sd-master/static/css/main.e6c13ad2.css.map",
+    "main.f5149e60.js.map": "/sd-master/static/js/main.f5149e60.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.f5149e60.js"
+  ]
+}
